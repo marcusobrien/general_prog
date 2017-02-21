@@ -89,6 +89,34 @@ namespace SortingBasics
 				System.Console.Write("o");
 		}
 
+		public void SortWithoutRecursionv3(List<T> unsortedItems)
+		{
+			int count = unsortedItems.Count;
+
+			if (Print)
+			{
+				PrintItems("v3 Pre Sorted items", unsortedItems);
+				PrintListToFile(String.Format("v3 Pre Sorted items : {0}", count), unsortedItems);
+			}
+
+			var watch = System.Diagnostics.Stopwatch.StartNew();
+			unsortedItems.Sort();
+			watch.Stop();
+
+			var elapsedMs = watch.ElapsedMilliseconds;
+
+			PrintTime("v3 ", elapsedMs);
+			WriteToFile(String.Format("v3 Post Sorted items : {0} Took : {1} seconds {2} minutes ", count, elapsedMs * 0.001, (elapsedMs * 0.001) / 60));
+
+			if (Print)
+			{
+				PrintItems("V3 Post Sorted items", unsortedItems);
+				PrintListToFile("V3 Post Sorted List", unsortedItems);
+			}
+
+			System.Console.WriteLine("v3 Post Sorted items");
+		}
+
 		public void SortWithoutRecursionv1(IList<T> unsortedItems)
 		{
 			int NUM_ITERATIONS = 0;
@@ -139,7 +167,7 @@ namespace SortingBasics
 			if (Print)
 			{
 				PrintItems("Post Sorted items", unsortedItems);
-				PrintListToFile("V2 Post Sorted List", unsortedItems);
+				PrintListToFile("V1 Post Sorted List", unsortedItems);
 			}
 
 			System.Console.WriteLine(String.Format("v1 Post Sorted items Did {0} iterations in search and {1} Comparisons", NUM_ITERATIONS, NUM_COMPARES));
@@ -501,20 +529,23 @@ namespace SortingBasics
 			{
 				//var suit = SetTestType();
 				System.Console.WriteLine(String.Format("Testing with sort type : {0}", suit));
-
-				Fill(MyItemsToSort, (int)suit);
-				
 				MOBsSuperSort<int> sorting = new MOBsSuperSort<int>(PrintList);
 				sorting.WriteSessionIdToFile(id, suit.ToString());
 
+				//v1 sort test
+				Fill(MyItemsToSort, (int)suit);				
 				sorting.SortWithoutRecursionv1(MyItemsToSort);
-
 				TestList(MyItemsToSort, "Search V1");
 
 				//Now test v2
 				Fill(MyItemsToSort, (int)suit);
 				sorting.SortWithoutRecursionv2(MyItemsToSort);
 				TestList(MyItemsToSort, "Search V2");
+
+				//Now test the built in one
+				Fill(MyItemsToSort, (int)suit);
+				sorting.SortWithoutRecursionv3(MyItemsToSort);
+				TestList(MyItemsToSort, "Search V3");
 			}
 		}
 	}
